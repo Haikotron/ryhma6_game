@@ -28,52 +28,52 @@ public class ObjectiveManager : MonoBehaviour
         new StallHintSet
         {
             stallName = "koju1",
-            hints = new[] { "first on the left", "red", "#1" }
+            hints = new[] { "red" }
         },
         new StallHintSet
         {
             stallName = "koju2",
-            hints = new[] { "second on the left", "green", "#2" }
+            hints = new[] { "green" }
         },
         new StallHintSet
         {
             stallName = "koju3",
-            hints = new[] { "third on the left", "purple", "#3" }
+            hints = new[] { "purple" }
         },
         new StallHintSet
         {
             stallName = "koju4",
-            hints = new[] { "fourth on the left", "blue", "#4" }
+            hints = new[] { "blue" }
         },
         new StallHintSet
         {
             stallName = "koju5",
-            hints = new[] { "fifth on the left", "yellow", "#5" }
+            hints = new[] { "yellow" }
         },
         new StallHintSet
         {
             stallName = "koju6",
-            hints = new[] { "first on the right", "white", "#6" }
+            hints = new[] { "white" }
         },
         new StallHintSet
         {
             stallName = "koju7",
-            hints = new[] { "second on the right", "pink", "#7" }
+            hints = new[] { "pink" }
         },
         new StallHintSet
         {
             stallName = "koju8",
-            hints = new[] { "third on the right", "orange", "#8" }
+            hints = new[] { "orange" }
         },
         new StallHintSet
         {
             stallName = "koju9",
-            hints = new[] { "fourth on the right", "black", "#9" }
+            hints = new[] { "black" }
         },
         new StallHintSet
         {
             stallName = "koju10",
-            hints = new[] { "fifth on the right", "grey", "#10" }
+            hints = new[] { "grey" }
         }
     };
     private readonly List<string> messageHistory = new List<string>();
@@ -88,6 +88,7 @@ public class ObjectiveManager : MonoBehaviour
     {
         currentTarget = "";
         objectiveText.text = "";
+        UpdateUI("Walk to the Home Base and press SPACE to get your first route.");
     }
 
     public void AloitaReitti()
@@ -95,6 +96,7 @@ public class ObjectiveManager : MonoBehaviour
         if (routeActive)
         {
             ShowMessage("Finish the current route first.");
+            Toast("Finish the current route first!", GameUI.InfoColor);
             return;
         }
 
@@ -121,6 +123,8 @@ public class ObjectiveManager : MonoBehaviour
         routeActive = true;
 
         ShowMessage("From the " + firstHint + " to the " + destinationHint);
+        UpdateUI("From the <color=#FFC233>" + firstHint + "</color> to the <color=#FFC233>" + destinationHint + "</color>");
+        Toast("New route!", GameUI.InfoColor);
     }
 
     public void YritaValitaKoju(string stallName)
@@ -128,6 +132,7 @@ public class ObjectiveManager : MonoBehaviour
         if (!routeActive)
         {
             ShowMessage("Get a new hint from the Home Base.");
+            Toast("Get a route from the Home Base first!", GameUI.InfoColor);
             return;
         }
 
@@ -135,6 +140,8 @@ public class ObjectiveManager : MonoBehaviour
         {
             score = Mathf.Max(0, score - 1);
             ShowMessage("Wrong stall!");
+            UpdateUI(null);
+            Toast("Wrong stall!  -1", GameUI.BadColor);
             return;
         }
 
@@ -143,6 +150,8 @@ public class ObjectiveManager : MonoBehaviour
             firstStallVisited = true;
             currentTarget = destinationTarget;
             ShowMessage("Yes, go on...");
+            UpdateUI("Now go to the <color=#FFC233>" + destinationHint + "</color>");
+            Toast("Correct! Keep going...", GameUI.GoodColor);
             return;
         }
 
@@ -153,10 +162,27 @@ public class ObjectiveManager : MonoBehaviour
         if (score >= winScore)
         {
             ShowMessage("YOU WON!");
+            UpdateUI("You won!");
+            if (GameUI.Instance != null) GameUI.Instance.ShowWin(score);
             return;
         }
 
         ShowMessage("Route complete! Return to the Home Base.");
+        UpdateUI("Return to the Home Base for a new route.");
+        Toast("Route complete!  +1", GameUI.GoodColor);
+    }
+
+    // Passing null keeps the current objective text and only refreshes the score.
+    private void UpdateUI(string objective)
+    {
+        if (GameUI.Instance == null) return;
+        GameUI.Instance.SetScore(score, winScore);
+        if (objective != null) GameUI.Instance.SetObjective(objective);
+    }
+
+    private static void Toast(string message, Color color)
+    {
+        if (GameUI.Instance != null) GameUI.Instance.ShowToast(message, color);
     }
 
     private string ArvoVihje(StallHintSet stall)

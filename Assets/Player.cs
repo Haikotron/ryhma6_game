@@ -40,19 +40,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        SetCursorLocked(true);
-    }
-
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            SetCursorLocked(Cursor.lockState != CursorLockMode.Locked);
-        }
-
-        if (Cursor.lockState == CursorLockMode.Locked)
+        if (GameUI.IsPlaying && Cursor.lockState == CursorLockMode.Locked)
         {
             Look();
             Move();
@@ -104,24 +94,5 @@ public class Player : MonoBehaviour
         Vector3 movement = direction * moveSpeed;
         movement.y = verticalVelocity;
         characterController.Move(movement * Time.deltaTime);
-    }
-
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus)
-        {
-            SetCursorLocked(true);
-        }
-    }
-
-    private void OnDisable()
-    {
-        SetCursorLocked(false);
-    }
-
-    private static void SetCursorLocked(bool locked)
-    {
-        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = !locked;
     }
 }

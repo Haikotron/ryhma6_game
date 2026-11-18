@@ -10,6 +10,7 @@ public class HomeBase : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = true;
+            if (GameUI.Instance != null) GameUI.Instance.ShowPrompt("Press <b>SPACE</b> to get a new route");
         }
     }
 
@@ -18,12 +19,14 @@ public class HomeBase : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = false;
+            if (GameUI.Instance != null) GameUI.Instance.HidePrompt();
         }
     }
 
     private void Update()
     {
         if (playerNearby &&
+            GameUI.IsPlaying &&
             Keyboard.current != null &&
             Keyboard.current.spaceKey.wasPressedThisFrame &&
             ObjectiveManager.Instance != null)
