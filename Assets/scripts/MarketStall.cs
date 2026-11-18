@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class MarketStall : MonoBehaviour
 {
-    public string stallName = "Koju";
+    public string stallName = "Stall";
     private bool playerNearby = false;
 
     private void OnTriggerEnter(Collider other)
@@ -11,7 +11,7 @@ public class MarketStall : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = true;
-            Debug.Log("Pelaaja tuli kojulle");
+            Debug.Log("Player entered the stall");
         }
     }
 
@@ -25,44 +25,14 @@ public class MarketStall : MonoBehaviour
 
     private void Update()
     {
-        if (playerNearby && Keyboard.current.eKey.wasPressedThisFrame)
+        if (playerNearby &&
+            Keyboard.current != null &&
+            Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-        if (stallName == ObjectiveManager.Instance.currentTarget)
-        {
-           ObjectiveManager.Instance.score++;
-           if (ObjectiveManager.Instance.score >= ObjectiveManager.Instance.winScore)
-    {
-        ObjectiveManager.Instance.objectiveText.text =
-            "VOITIT PELIN!";
-
-        return;
-    }
- 
-         ObjectiveManager.Instance.objectiveText.text =
-        "Oikea koju! Pisteet: " +
-        ObjectiveManager.Instance.score;
-
-        Invoke(nameof(AnnaUusiTehtava), 2f);
-    }
-    else
-    {
-        ObjectiveManager.Instance.score =
-    Mathf.Max(0, ObjectiveManager.Instance.score - 1);
-
-        ObjectiveManager.Instance.objectiveText.text =
-        "Vaara koju! Pisteet: " +
-        ObjectiveManager.Instance.score;
-
-        Invoke(nameof(TyhjennaTeksti), 2f);
-    }
+            if (ObjectiveManager.Instance != null)
+            {
+                ObjectiveManager.Instance.YritaValitaKoju(stallName);
+            }
         }
     }
-        private void AnnaUusiTehtava()
-    {
-        ObjectiveManager.Instance.AnnaSatunnainenTehtava();
-    }
-    private void TyhjennaTeksti()
-    {
-        ObjectiveManager.Instance.objectiveText.text = "";
-}
 }

@@ -8,9 +8,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Camera playerCamera;
 
     [Header("Movement")]
-    [SerializeField] private float moveSpeed = 4f;
+    [SerializeField] private float moveSpeed = 8f;
     [SerializeField] private float gravity = -20f;
-    [SerializeField] private float jumpHeight = 1.2f;
 
     [Header("Mouse look")]
     [SerializeField] private float mouseSensitivity = 0.1f;
@@ -96,11 +95,6 @@ public class Player : MonoBehaviour
         if (characterController.isGrounded)
         {
             verticalVelocity = -2f;
-
-            if (Keyboard.current.spaceKey.wasPressedThisFrame)
-            {
-                verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            }
         }
         else
         {
